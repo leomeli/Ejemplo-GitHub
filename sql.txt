@@ -1,0 +1,134 @@
+Realizar las siguientes consultas en SQL
+
+1. Obtener el detalle de todos los socios.
+
+select * from Socios 
+
+
+2. Obtener el detalle de todas las editoriales ordenadas alfabéticamente según el nombre.
+
+select * from Editoriales
+order by ENombre
+
+
+3. Mostrar el título del libro y el nombre del autor de todos los libros ordenados alfabéticamente según
+nombres del libro.
+
+select LTitulo, LAutor from Libro
+order by LTitulo
+
+
+4. Mostrar el código del libro y la fecha de préstamo de todos los préstamos registrados.
+
+select LCod, PFecha 
+from Libros, Prestamos
+where LCod_Prestamo=LCod
+
+select LCod, PFecha 
+from Libros l
+inner join Prestamos p on p.LCod_Prestamo=l.LCod
+
+
+5. Obtener el detalle de aquellos socios que viven en la calle Maipú.
+
+select * from Socios
+where SDomicilio='Maipu...'
+
+
+6. Obtener el detalle de todas las editoriales excepto de la editorial con código 1030.
+
+select * from Editoriales
+where ECod not in (1030)
+
+
+7. Obtener el detalle de aquellos socios cuyo apellido empiece con la letra P y tengan código mayor que 100.
+
+select * 
+from Socios 
+where SNombreApellido in 
+and SCod > 100
+
+
+8. Mostrar el código de los socios que tengan prestado libros entre 2 y 7 días.
+
+select SCod_Prestamo
+from Prestamos
+where PCantDias > 2 and PCantDias < 7
+
+
+9. Obtener el detalle de todos los libros. En este detalle deberán figurar: el título del libro, el autor de
+libro y el nombre de la editorial que lo publicó.
+
+select LTitulo, LAutor, ENombre
+from Libros, Editoriales
+where LCod=ECod 
+
+select LTitulo, LAutor, ENombre
+from Libros 
+inner join Editoriales on LCod=ECod 
+
+
+10. Obtener el nombre y el domicilio de los socios que tengan prestados libros por al menos 4 días.
+
+select SNombreApellido, SDomicilio
+from Socios, Prestamos
+where SCod=SCod_Prestamo and PCantDias>=4 
+
+
+11. Obtener el código de los socios que tengan prestados libros de la editorial Eureka.
+
+select SCod
+from Socios, Préstamos, Editoriales
+where SCod=SCod_Prestamo
+and ECod=SCod_Prestamo
+and ENombre='Eureka'
+
+select S.SCod
+from Socios S
+inner join Préstamos   P on P.SCod_Prestamo=S.SCod
+inner join Editoriales E on E.ECod=S.SCod
+where E.ENombre='Eureka'
+
+
+
+12. Obtener el código y nombre de los socios que tengan prestados libros de Jorge Luis Borges o de
+Alfonsina Storni.
+
+select SCod, SNombreApellido
+from Socios S
+inner join Prestamos P on P.SCod_Prestamo=S.Socios
+inner join Libros    L on L.LCod=S.Socios
+where L.LAutor in ('Jorge Luis Borges' or 'Alfonsina Storni')
+
+
+
+13. Obtener el detalle de todos los préstamos. En este detalle deberán figurar: el nombre del socio al que
+se le realizó el préstamo, el título del libro que se le prestó, el nombre de la editorial a la que
+pertenece dicho libro y la cantidad de días por la que se realizó el préstamo.
+
+select S.SNombreApellido, L.LTitulo, E.ENombre, P.PCantDias
+from Prestamos P
+inner join Socios       S on S.SCod=P.SCod_Prestamo 
+inner join Libros       L on L.LCod=P.SCod_Prestamo 
+inner join Editoriales  E on E.ECod=P.SCod_Prestamo
+
+
+
+14. Obtener el código de los socios que tengan prestados libros de Jorge Luis Borges y de Alfonsina
+Storni.
+
+select S.SCod
+from Socios S
+inner join Prestamos P on P.SCod_Prestamo=S.SCod
+inner join Libros    L on L.LCod=S.SCod
+where  L.LAutor = 'Jorge Luis Borges' and L.LAutor = 'Alfonsina Storni'
+
+15. Obtener el código de los socios que tengan prestados libros de Jorge Luis Borges pero no tengan
+libros prestados de Alfonsina Storni.
+
+select S.SCod 
+from Socios S 
+inner join Prestamos P on P.SCod_Prestamo=S.SCod
+inner join Libros    L on L.LCod=S.SCod
+where  L.LAutor = 'Jorge Luis Borges' 
+and L.LAutor not in ('Alfonsina Storni')
