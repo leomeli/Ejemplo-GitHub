@@ -122,7 +122,7 @@ select S.SCod
 from Socios S
 inner join Prestamos P on P.SCod_Prestamo=S.SCod
 inner join Libros    L on L.LCod=S.SCod
-where  L.LAutor = 'Jorge Luis Borges' and L.LAutor = 'Alfonsina Storni'
+where  L.LAutor = 'Jorge Luis Borges' or L.LAutor = 'Alfonsina Storni'
 
 15. Obtener el código de los socios que tengan prestados libros de Jorge Luis Borges pero no tengan
 libros prestados de Alfonsina Storni.
@@ -131,8 +131,7 @@ select S.SCod
 from Socios S 
 inner join Prestamos P on P.SCod_Prestamo=S.SCod
 inner join Libros    L on L.LCod=S.SCod
-where  L.LAutor = 'Jorge Luis Borges' 
-and L.LAutor not in ('Alfonsina Storni')
+where  L.LAutor = 'Jorge Luis Borges' or L.LAutor not in ('Alfonsina Storni')
 
 
 16. Mostrar el código de los socios que cumplan con tenger prestado libros entre 2 y 7 días o que tengan
@@ -249,8 +248,9 @@ select
 SCod,
 count(*) cant_libros
 from Socios S
-inner join Prestamos P on P.SCod_Prestamo=S.SCod
-where cant_libros>2
+inner join Prestamos P on P.SCod_Prestamo=S.SCod 
+group by SCod
+having cant_libros>2
 
 
 27. Obtener nombre de autor y la cantidad de libros escritos y editados por la editorial Eureka. Mostrar
@@ -258,19 +258,24 @@ sólo aquellos aquellos autores que tengan más de un libro editado en esa edito
 
 select 
 L.LAutor,
-count(*)
+count(*) cant_libros
 from Libros L
 inner join Editorial E on E.ECod=L.ECod_Editado
 where E.ENombre='Eureka'
 group by L.LAutor
+having cant_libros>2
 
 
 28. Dar el nombre y dirección de los socios que tengan prestado 3 libros.
 
-select SNombreApellido, SDomicilio
+select 
+SNombreApellido, 
+SDomicilio,
+count(*) cant_libros
 from Socios S
 inner join Prestamos P on P.SCod_Prestamo=S.SCod
-where PCantDias=3
+group by SNombreApellido,SDomicilio
+having cant_libros=3
 
 
 29. Dar el título de los libros publicados por las editoriales en las que ha publicado Jorge Luis Borges.
@@ -285,19 +290,10 @@ where LAutor='Jorge Luis Borges'
 30. Obtener el código de los socios que tengan préstamos por una cantidad de días superior al promedio
 de la cantidad de días por la que se ha realizado algún préstamo.
 
-----------------  opcion a  --------------------
 select SCod
 from socios
 inner join Prestamos P on P.SCod_Prestamo=S.SCod
-where PCantDias > avg(PCantDias)
-
-
-----------------  opcion b  --------------------
-select 
-SCod,
-avg(PCantDias) as prom
-from socios
-inner join Prestamos P on P.SCod_Prestamo=S.SCod
-where PCantDias > prom
+group by SCod
+having PCantDias > avg(PCantDias)
 
 
